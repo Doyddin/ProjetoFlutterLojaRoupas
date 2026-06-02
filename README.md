@@ -1,3 +1,3 @@
-# app_de_roupa
+# App de Loja de Roupas
 
-A new Flutter project.
+Um projeto acadêmico simples utilizando flutter.
