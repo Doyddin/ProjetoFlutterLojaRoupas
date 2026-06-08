@@ -1,3 +1,4 @@
+import 'package:app_de_roupa/lista_de_roupas.dart';
 import 'package:flutter/material.dart';
 
 class AppDeRoupasIndex extends StatefulWidget {
@@ -12,8 +13,8 @@ class _AppDeRoupasIndexState extends State<AppDeRoupasIndex> {
   //implementar contador de indeces do banco
   int _quantidadeDeItens = 0;
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text('Index 0: Início'),
+  static final List<Widget> _widgetOptions = <Widget>[
+    ListaDeRoupas(),
     Text('Index 1: Carrinho'),
     Text('Index 2: Pagamento'),
   ];
