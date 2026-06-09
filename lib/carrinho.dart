@@ -1,43 +1,42 @@
-import 'package:app_de_roupa/carousel_imagens.dart';
 import 'package:app_de_roupa/data_access_object.dart';
 import 'package:app_de_roupa/produto.dart';
 import 'package:flutter/material.dart';
 
-class ListaDeRoupas extends StatefulWidget {  
-  const ListaDeRoupas({super.key});
-
+class Carrinho extends StatefulWidget {
+  const Carrinho({super.key});
 
   @override
   State<StatefulWidget> createState() {
-    return ListaDeRoupasState();
+    return CarrinhoState();
   }
 }
 
-class ListaDeRoupasState extends State<ListaDeRoupas> {
+class CarrinhoState extends State<Carrinho> {
   List<Produto> _produtos = [];
 
-  void atualizarLista() async {
-    var produtos = await DataAccessObject.obterProdutos();
+  void pegarCarrinho() async {
+    List<Produto> produtos = await DataAccessObject.obterProdutosNoCarrinho();
+
     setState(() {
       _produtos = produtos;
     });
   }
 
+  void removerDoCarrinho(int id) async {
+    await DataAccessObject.removerDoCarrinho(id);
+    pegarCarrinho();
+  }
+
   @override
   void initState() {
     super.initState();
-    atualizarLista();
-  }
-
-  void adicionarAoCarrinho(int produtoId) {
-    DataAccessObject.adicionarCarrinho(produtoId);
+    pegarCarrinho();
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CarouselImagens(),
         ListView.builder(
           shrinkWrap: true, // necessária quando o ListView está numa Column
           itemCount: _produtos.length,
@@ -46,10 +45,12 @@ class ListaDeRoupasState extends State<ListaDeRoupas> {
               leading: Image.asset("assets/${_produtos[index].imagem}"),
               title: Text(_produtos[index].nome),
               subtitle: Text("Preço: ${_produtos[index].valor}"),
-              trailing: Icon(Icons.shopping_bag),
-              onTap: () {
-                adicionarAoCarrinho(_produtos[index].id);
-              },
+              trailing: IconButton(
+                onPressed: () {
+                  removerDoCarrinho(_produtos[index].carrinhoId);
+                },
+                icon: Icon(Icons.delete),
+              ),
             );
           },
         ),

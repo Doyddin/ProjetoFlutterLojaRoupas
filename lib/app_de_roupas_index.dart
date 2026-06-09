@@ -1,7 +1,12 @@
+import 'package:app_de_roupa/carrinho.dart';
 import 'package:app_de_roupa/lista_de_roupas.dart';
+import 'package:app_de_roupa/tela_pagamento.dart';
 import 'package:flutter/material.dart';
+import 'data_access_object.dart';
 
 class AppDeRoupasIndex extends StatefulWidget {
+  const AppDeRoupasIndex({super.key});
+  
   @override
   State<StatefulWidget> createState() {
     return _AppDeRoupasIndexState();
@@ -10,13 +15,20 @@ class AppDeRoupasIndex extends StatefulWidget {
 
 class _AppDeRoupasIndexState extends State<AppDeRoupasIndex> {
   int _selectedIndex = 0;
-  //implementar contador de indeces do banco
   int _quantidadeDeItens = 0;
+
+  void atualizarQuantidadeItens() async {
+    final produtos = await DataAccessObject.obterProdutosNoCarrinho();
+
+    setState(() {
+      _quantidadeDeItens = produtos.length;
+    });
+  }
 
   static final List<Widget> _widgetOptions = <Widget>[
     ListaDeRoupas(),
-    Text('Index 1: Carrinho'),
-    Text('Index 2: Pagamento'),
+    Carrinho(),
+    TelaPagamento(),
   ];
 
   void _onItemTapped(int index) {
@@ -24,6 +36,13 @@ class _AppDeRoupasIndexState extends State<AppDeRoupasIndex> {
       _selectedIndex = index;
     });
   }
+
+   @override
+  void initState() {
+    super.initState();
+    atualizarQuantidadeItens();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +61,7 @@ class _AppDeRoupasIndexState extends State<AppDeRoupasIndex> {
           },
         ),
       ),
-      body: Center(child: _widgetOptions[_selectedIndex],),
+      body: Center(child: _widgetOptions[_selectedIndex]),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -64,7 +83,10 @@ class _AppDeRoupasIndexState extends State<AppDeRoupasIndex> {
             ListTile(
               title: Text("Carrinho"),
               selected: _selectedIndex == 1,
-              trailing: Text(_quantidadeDeItens.toString(), style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
+              trailing: Text(
+                _quantidadeDeItens.toString(),
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              ),
               onTap: () {
                 _onItemTapped(1);
                 Navigator.pop(context);
